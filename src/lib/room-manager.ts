@@ -49,12 +49,12 @@ class RoomManager {
         },
         null
       ],
-      status: 'waiting',
+      status: 'waiting', // Waiting for guest to join
       hostSecret: secretNumber,
       guestSecret: null,
       guessHistory: [],
       winner: null,
-      currentTurn: 'host',
+      currentTurn: 'host', // When game starts, host goes first
       createdAt: Date.now()
     };
 

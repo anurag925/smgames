@@ -145,6 +145,14 @@ export default function GuessTheNumber() {
         }))
         break
         
+      case 'game_started':
+        setGameState(prev => ({
+          ...prev,
+          status: data.status,
+          currentTurn: data.currentTurn
+        }))
+        break
+
       case 'game_reset':
         setGameState(prev => ({
           ...prev,
@@ -175,6 +183,12 @@ export default function GuessTheNumber() {
   const createRoom = () => {
     if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify({ type: 'create_room' }))
+      // Update local state to reflect that we're creating a room
+      setGameState(prev => ({
+        ...prev,
+        status: 'waiting', // Waiting for opponent
+        playerRole: 'host'
+      }))
     } else {
       alert('Not connected to server')
     }
@@ -183,11 +197,19 @@ export default function GuessTheNumber() {
   // Join an existing room
   const joinRoom = () => {
     if (!inputRoomCode.trim()) return
-    
+
+    // Update local state to reflect that we're trying to join
+    setGameState(prev => ({
+      ...prev,
+      id: inputRoomCode,
+      playerRole: 'guest',
+      status: 'waiting' // We'll wait for the server to confirm the game start
+    }))
+
     if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify({ 
-        type: 'join_room', 
-        roomId: inputRoomCode 
+      socket.send(JSON.stringify({
+        type: 'join_room',
+        roomId: inputRoomCode
       }))
     } else {
       alert('Not connected to server')

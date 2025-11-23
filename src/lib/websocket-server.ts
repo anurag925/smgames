@@ -112,10 +112,13 @@ class GameServer {
       return;
     }
 
-    // Notify both players of the updated game state
-    const gameState = {
+    // At this point, the room status should change to 'playing' since both players are now present
+    room.status = 'playing';
+
+    // Send game state to guest (only with guest's secret)
+    const guestGameState = {
       type: 'game_state',
-      status: room.status,
+      status: room.status, // Now explicitly set to 'playing'
       players: [
         {
           id: room.players[0]?.id,
@@ -128,7 +131,7 @@ class GameServer {
           connected: room.players[1]?.connected
         }
       ],
-      yourSecret: room.players[1]?.role === 'guest' ? room.guestSecret : room.hostSecret,
+      yourSecret: room.guestSecret, // Guest receives their own secret
       guessHistory: room.guessHistory,
       currentTurn: room.currentTurn,
       opponentConnected: room.players[0]?.connected
@@ -136,19 +139,41 @@ class GameServer {
 
     // Send to guest
     this.sendMessage(ws, {
-      ...gameState,
+      ...guestGameState,
       role: 'guest'
     });
+
+    // Send game state to host (only with host's secret)
+    const hostGameState = {
+      type: 'game_state',
+      status: room.status, // Now explicitly set to 'playing'
+      players: [
+        {
+          id: room.players[0]?.id,
+          role: room.players[0]?.role,
+          connected: room.players[0]?.connected
+        },
+        {
+          id: room.players[1]?.id,
+          role: room.players[1]?.role,
+          connected: room.players[1]?.connected
+        }
+      ],
+      yourSecret: room.hostSecret, // Host receives their own secret
+      guessHistory: room.guessHistory,
+      currentTurn: room.currentTurn,
+      opponentConnected: room.players[1]?.connected // For host, check guest connection
+    };
 
     // Send to host
     if (room.players[0]?.ws) {
       this.sendMessage(room.players[0].ws, {
-        ...gameState,
+        ...hostGameState,
         role: 'host'
       });
     }
 
-    console.log(`Guest joined room ${roomId}`);
+    console.log(`Guest joined room ${roomId} and game status is now: ${room.status}`);
   }
 
   private handleMakeGuess(ws: WebSocket, guess: string) {

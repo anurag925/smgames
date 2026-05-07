@@ -233,6 +233,7 @@ export default function Home() {
               <Button
                 variant="secondary"
                 icon={<Trophy className="w-5 h-5 text-yellow-400" />}
+                className="whitespace-nowrap"
               >
                 View Leaderboards
               </Button>

@@ -282,7 +282,7 @@ export function RangeSlider({
 }) {
   return (
     <div className={className}>
-      <label className="block text-xs font-medium text-slate-400 mb-1 flex justify-between">
+      <label className="flex items-center justify-between text-xs font-medium text-slate-400 mb-1">
         <span>{label}</span>
         <span className="text-indigo-400">{value}%</span>
       </label>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import {
   Search,
   Gamepad2,
@@ -480,6 +481,9 @@ export default function Home() {
             <a href="#" className="hover:text-white transition-colors">
               Discord
             </a>
+            <Link href="/ui-showcase" className="hover:text-white transition-colors">
+              UI Showcase
+            </Link>
           </div>
         </div>
       </footer>

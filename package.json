@@ -13,6 +13,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "lucide-react": "^1.14.0",
     "next": "^16.2.5",
     "postcss": "^8.5.14",
     "react": "^18",

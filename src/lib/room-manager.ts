@@ -95,7 +95,7 @@ class RoomManager {
   }
 
   public removePlayer(ws: WebSocket): void {
-    for (const [roomId, room] of this.rooms.entries()) {
+    for (const [roomId, room] of Array.from(this.rooms.entries())) {
       if (room.players[0]?.ws === ws) {
         room.players[0].connected = false;
       } else if (room.players[1]?.ws === ws) {
@@ -111,7 +111,7 @@ class RoomManager {
   }
 
   public isPlayerInRoom(ws: WebSocket): boolean {
-    for (const room of this.rooms.values()) {
+    for (const room of Array.from(this.rooms.values())) {
       if (room.players[0]?.ws === ws || room.players[1]?.ws === ws) {
         return true;
       }
@@ -120,7 +120,7 @@ class RoomManager {
   }
 
   public getRoomForPlayer(ws: WebSocket): GameRoom | null {
-    for (const room of this.rooms.values()) {
+    for (const room of Array.from(this.rooms.values())) {
       if (room.players[0]?.ws === ws || room.players[1]?.ws === ws) {
         return room;
       }

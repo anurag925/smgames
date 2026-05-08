@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import {
   Search,
@@ -50,77 +50,30 @@ import {
 } from "../components";
 
 export default function Home() {
-  const [activeCategory, setActiveCategory] = useState("all");
-
-  const categories = [
-    { id: "all", name: "All Games", icon: Gamepad2 },
-    { id: "action", name: "Action", icon: Swords },
-    { id: "puzzle", name: "Puzzle", icon: Puzzle },
-    { id: "arcade", name: "Arcade", icon: Zap },
-    { id: "shooter", name: "Shooter", icon: Crosshair },
-    { id: "space", name: "Space", icon: Rocket },
-  ];
-
   const featuredGames = [
     {
       id: 1,
-      title: "Neon Rider",
-      category: "Arcade",
-      players: "12k",
-      rating: "4.8",
-      color: "from-pink-500 to-rose-600",
-      icon: Zap,
-      trending: true,
-    },
-    {
-      id: 2,
-      title: "Galaxy Defend",
-      category: "Space",
-      players: "8.5k",
-      rating: "4.5",
-      color: "from-indigo-500 to-blue-600",
-      icon: Rocket,
-      trending: true,
-    },
-    {
-      id: 3,
-      title: "Block Master",
+      title: "Guess the Number",
       category: "Puzzle",
-      players: "24k",
-      rating: "4.9",
+      players: "2",
+      rating: "4.8",
       color: "from-emerald-400 to-teal-600",
       icon: Puzzle,
       trending: false,
+      href: "/games/guess-the-number",
+      mode: "Online",
     },
     {
-      id: 4,
-      title: "Blade Runner",
-      category: "Action",
-      players: "5k",
-      rating: "4.2",
-      color: "from-orange-400 to-red-600",
-      icon: Swords,
+      id: 2,
+      title: "Undercover",
+      category: "Party",
+      players: "4-10",
+      rating: "4.9",
+      color: "from-pink-500 to-indigo-600",
+      icon: Crown,
       trending: true,
-    },
-    {
-      id: 5,
-      title: "Pixel Sniper",
-      category: "Shooter",
-      players: "19k",
-      rating: "4.7",
-      color: "from-violet-500 to-purple-700",
-      icon: Crosshair,
-      trending: false,
-    },
-    {
-      id: 6,
-      title: "Gravity Dash",
-      category: "Arcade",
-      players: "15k",
-      rating: "4.6",
-      color: "from-cyan-400 to-blue-600",
-      icon: Gamepad2,
-      trending: false,
+      href: "/games/undercover",
+      mode: "Offline",
     },
   ];
 
@@ -140,13 +93,6 @@ export default function Home() {
     { rank: 2, name: "PixelQueen", score: "138,200", avatar: "Aneka" },
     { rank: 3, name: "RetroBot_99", score: "115,400", avatar: "Bottts" },
   ];
-
-  const filteredGames =
-    activeCategory === "all"
-      ? featuredGames
-      : featuredGames.filter(
-          (g) => g.category.toLowerCase() === activeCategory.toLowerCase(),
-        );
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200">
@@ -275,58 +221,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Playable Games Section */}
-      <section className="max-w-7xl mx-auto px-4 pt-12 pb-6 relative z-20">
-        <div className="flex items-center justify-between mb-6">
-          <H2 className="flex items-center gap-2">
-            <Play className="text-emerald-400 fill-emerald-400" />
-            Playable Now
-          </H2>
-          <Badge variant="trending">NEW</Badge>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {/* Guess the Number */}
-          <Link href="/games/guess-the-number" className="group">
-            <div className="relative rounded-2xl p-1 bg-gradient-to-br from-emerald-400 to-teal-600 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-[0_10px_40px_-10px_rgba(16,185,129,0.4)]">
-              <div className="bg-slate-900 rounded-xl p-5 h-full">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-                    <Puzzle className="w-6 h-6 text-emerald-400" />
-                  </div>
-                  <SolidBadge>Multiplayer</SolidBadge>
-                </div>
-                <H3 className="text-lg font-black text-white mb-1">Guess the Number</H3>
-                <MutedText>Challenge a friend to guess a 4-digit number with clues</MutedText>
-                <div className="flex items-center gap-3 mt-3">
-                  <DotIndicator label="2 Players" />
-                  <span className="text-xs text-slate-500">Online</span>
-                </div>
-              </div>
-            </div>
-          </Link>
-
-          {/* Undercover */}
-          <Link href="/games/undercover" className="group">
-            <div className="relative rounded-2xl p-1 bg-gradient-to-br from-pink-500 to-indigo-600 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-[0_10px_40px_-10px_rgba(236,72,153,0.4)]">
-              <div className="bg-slate-900 rounded-xl p-5 h-full">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center">
-                    <Crown className="w-6 h-6 text-pink-400" />
-                  </div>
-                  <SubtleBadge>Party</SubtleBadge>
-                </div>
-                <H3 className="text-lg font-black text-white mb-1">Undercover</H3>
-                <MutedText>Social deduction game — find the impostor among you</MutedText>
-                <div className="flex items-center gap-3 mt-3">
-                  <DotIndicator label="4-10 Players" />
-                  <span className="text-xs text-slate-500">Offline</span>
-                </div>
-              </div>
-            </div>
-          </Link>
-        </div>
-      </section>
-
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-12 flex flex-col lg:flex-row gap-8 relative z-20">
         {/* Game Library */}
@@ -338,34 +232,10 @@ export default function Home() {
             </H2>
           </div>
 
-          {/* Category Filters */}
-          <div className="flex flex-wrap gap-3 mb-6">
-            {categories.map((cat) => {
-              const CatIcon = cat.icon;
-              const isActive = activeCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-full font-bold text-sm transition-all ${
-                    isActive
-                      ? "bg-indigo-500 text-white shadow-[0_0_15px_rgba(99,102,241,0.5)]"
-                      : "bg-slate-900/80 text-slate-400 hover:bg-slate-800 hover:text-white border border-slate-800"
-                  }`}
-                >
-                  <CatIcon
-                    className={`w-4 h-4 ${isActive ? "text-white" : "text-slate-500"}`}
-                  />
-                  {cat.name}
-                </button>
-              );
-            })}
-          </div>
-
           {/* Games Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {filteredGames.map((game) => (
-              <div key={game.id} className="group cursor-pointer">
+            {featuredGames.map((game) => (
+              <Link key={game.id} href={game.href} className="group cursor-pointer">
                 <div
                   className={`relative w-full aspect-square rounded-2xl p-1 bg-gradient-to-br ${game.color} transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]`}
                 >
@@ -406,14 +276,8 @@ export default function Home() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
-          </div>
-
-          <div className="mt-12 text-center">
-            <Button variant="secondary" icon={<Menu className="w-4 h-4" />}>
-              Load More Games
-            </Button>
           </div>
         </div>
 

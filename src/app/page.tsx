@@ -275,6 +275,58 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Playable Games Section */}
+      <section className="max-w-7xl mx-auto px-4 pt-12 pb-6 relative z-20">
+        <div className="flex items-center justify-between mb-6">
+          <H2 className="flex items-center gap-2">
+            <Play className="text-emerald-400 fill-emerald-400" />
+            Playable Now
+          </H2>
+          <Badge variant="trending">NEW</Badge>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {/* Guess the Number */}
+          <Link href="/games/guess-the-number" className="group">
+            <div className="relative rounded-2xl p-1 bg-gradient-to-br from-emerald-400 to-teal-600 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-[0_10px_40px_-10px_rgba(16,185,129,0.4)]">
+              <div className="bg-slate-900 rounded-xl p-5 h-full">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                    <Puzzle className="w-6 h-6 text-emerald-400" />
+                  </div>
+                  <SolidBadge>Multiplayer</SolidBadge>
+                </div>
+                <H3 className="text-lg font-black text-white mb-1">Guess the Number</H3>
+                <MutedText>Challenge a friend to guess a 4-digit number with clues</MutedText>
+                <div className="flex items-center gap-3 mt-3">
+                  <DotIndicator label="2 Players" />
+                  <span className="text-xs text-slate-500">Online</span>
+                </div>
+              </div>
+            </div>
+          </Link>
+
+          {/* Undercover */}
+          <Link href="/games/undercover" className="group">
+            <div className="relative rounded-2xl p-1 bg-gradient-to-br from-pink-500 to-indigo-600 transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-[0_10px_40px_-10px_rgba(236,72,153,0.4)]">
+              <div className="bg-slate-900 rounded-xl p-5 h-full">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center">
+                    <Crown className="w-6 h-6 text-pink-400" />
+                  </div>
+                  <SubtleBadge>Party</SubtleBadge>
+                </div>
+                <H3 className="text-lg font-black text-white mb-1">Undercover</H3>
+                <MutedText>Social deduction game — find the impostor among you</MutedText>
+                <div className="flex items-center gap-3 mt-3">
+                  <DotIndicator label="4-10 Players" />
+                  <span className="text-xs text-slate-500">Offline</span>
+                </div>
+              </div>
+            </div>
+          </Link>
+        </div>
+      </section>
+
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 py-12 flex flex-col lg:flex-row gap-8 relative z-20">
         {/* Game Library */}

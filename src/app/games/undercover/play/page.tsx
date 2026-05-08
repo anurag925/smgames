@@ -62,6 +62,7 @@ function initGame(config: GameConfig): {
   players: Player[];
   wordPair: WordPair;
   cardSlots: number[];
+  roleAssignments: Player["role"][];
 } {
   const wordPair = getRandomWordPair();
   const roles: Player["role"][] = [];
@@ -70,24 +71,23 @@ function initGame(config: GameConfig): {
   for (let i = 0; i < config.mrWhiteCount; i++) roles.push("mr-white");
   while (roles.length < config.playerCount) roles.push("civilian");
 
+  // Shuffle roles — these will be assigned when players pick cards
   const shuffledRoles = shuffle(roles);
+
+  // Players start with no role assigned (will be assigned during card pick)
   const players: Player[] = config.playerNames.map((name, i) => ({
     id: i,
     name,
-    role: shuffledRoles[i],
-    word:
-      shuffledRoles[i] === "civilian"
-        ? wordPair.civilian
-        : shuffledRoles[i] === "undercover"
-        ? wordPair.undercover
-        : null,
+    role: "civilian" as Player["role"], // placeholder, assigned on card pick
+    word: null,
     isAlive: true,
     hasPickedCard: false,
   }));
 
-  const cardSlots = shuffle(Array.from({ length: config.playerCount }, (_, i) => i));
+  // Card slots for the grid — each slot holds a role index
+  const cardSlots = Array.from({ length: config.playerCount }, (_, i) => i);
 
-  return { players, wordPair, cardSlots };
+  return { players, wordPair, cardSlots, roleAssignments: shuffledRoles };
 }
 
 // Check win conditions
@@ -160,6 +160,8 @@ export default function UndercoverPlay() {
   const [winner, setWinner] = useState<"civilians" | "undercover" | "mr-white" | null>(null);
   const [mrWhiteGuess, setMrWhiteGuess] = useState("");
   const [config, setConfig] = useState<GameConfig | null>(null);
+  const [roleAssignments, setRoleAssignments] = useState<Player["role"][]>([]);
+  const [pickedSlots, setPickedSlots] = useState<Set<number>>(new Set());
 
   // Load config from sessionStorage
   useEffect(() => {
@@ -170,10 +172,12 @@ export default function UndercoverPlay() {
     }
     const cfg: GameConfig = JSON.parse(stored);
     setConfig(cfg);
-    const { players, wordPair, cardSlots } = initGame(cfg);
+    const { players, wordPair, cardSlots, roleAssignments } = initGame(cfg);
     setPlayers(players);
     setWordPair(wordPair);
     setCardSlots(cardSlots);
+    setRoleAssignments(roleAssignments);
+    setPickedSlots(new Set());
   }, [router]);
 
   // Current player for card pick
@@ -201,6 +205,21 @@ export default function UndercoverPlay() {
 
   // ---- Card Pick handlers ----
   const handleCardPick = (slotIndex: number) => {
+    if (pickedSlots.has(slotIndex)) return;
+    // Assign the role from this card slot to the current player
+    const role = roleAssignments[slotIndex];
+    const word =
+      role === "civilian"
+        ? wordPair!.civilian
+        : role === "undercover"
+        ? wordPair!.undercover
+        : null;
+
+    setPlayers((prev) =>
+      prev.map((p) =>
+        p.id === currentPickIndex ? { ...p, role, word } : p
+      )
+    );
     setRevealedCard(slotIndex);
   };
 
@@ -210,12 +229,12 @@ export default function UndercoverPlay() {
         p.id === currentPickIndex ? { ...p, hasPickedCard: true } : p
       )
     );
+    setPickedSlots((prev) => new Set(prev).add(revealedCard!));
     setRevealedCard(null);
 
     if (currentPickIndex < players.length - 1) {
       setCurrentPickIndex(currentPickIndex + 1);
     } else {
-      // All picked — move to discussion
       setCurrentSpeaker(0);
       setPhase("discussion");
     }
@@ -344,9 +363,8 @@ export default function UndercoverPlay() {
           {/* Card Grid */}
           <div className="flex-1 px-6">
             <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto">
-              {cardSlots.map((playerIdx, slotIdx) => {
-                const player = players[playerIdx];
-                const isPicked = player.hasPickedCard;
+              {cardSlots.map((_, slotIdx) => {
+                const isPicked = pickedSlots.has(slotIdx);
                 const isRevealed = revealedCard === slotIdx;
 
                 if (isPicked) {
@@ -399,29 +417,31 @@ export default function UndercoverPlay() {
           </div>
 
           {/* Revealed Card Modal */}
-          {revealedCard !== null && (
+          {revealedCard !== null && (() => {
+            const pickingPlayer = players[currentPickIndex];
+            return (
             <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-6">
               <div className="bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700 rounded-3xl p-6 w-full max-w-sm shadow-2xl">
                 {/* Avatar */}
                 <div className="flex flex-col items-center mb-4">
                   <div
                     className={`w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold text-white mb-2 ${
-                      getRoleColor(players[cardSlots[revealedCard]].role).bg
+                      getRoleColor(pickingPlayer.role).bg
                     }`}
                   >
-                    {players[cardSlots[revealedCard]].name[0].toUpperCase()}
+                    {pickingPlayer.name[0].toUpperCase()}
                   </div>
-                  <SolidBadge className={"rounded-full !px-3 !py-1 " + getRoleColor(players[cardSlots[revealedCard]].role).bg}>
-                    {getRoleLabel(players[cardSlots[revealedCard]].role)}
+                  <SolidBadge className={"rounded-full !px-3 !py-1 " + getRoleColor(pickingPlayer.role).bg}>
+                    {getRoleLabel(pickingPlayer.role)}
                   </SolidBadge>
                 </div>
 
                 {/* Player name */}
                 <H3 className="text-center bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text !text-transparent mb-1">
-                  {players[cardSlots[revealedCard]].name}
+                  {pickingPlayer.name}
                 </H3>
                 <MutedText className="text-slate-400 text-center mb-4">
-                  {players[cardSlots[revealedCard]].role === "mr-white"
+                  {pickingPlayer.role === "mr-white"
                     ? "You have no secret word"
                     : "Your secret word"}
                 </MutedText>
@@ -429,9 +449,9 @@ export default function UndercoverPlay() {
                 {/* Word reveal */}
                 <div className="bg-slate-700/50 border border-slate-600/50 rounded-2xl p-6 mb-6">
                   <p className="text-center text-xl font-bold text-white">
-                    {players[cardSlots[revealedCard]].role === "mr-white"
+                    {pickingPlayer.role === "mr-white"
                       ? "You are Mr. White"
-                      : players[cardSlots[revealedCard]].word}
+                      : pickingPlayer.word}
                   </p>
                 </div>
 
@@ -439,7 +459,8 @@ export default function UndercoverPlay() {
                 <Button variant="success" onClick={handleCardOk} className="w-full text-lg py-3">OK</Button>
               </div>
             </div>
-          )}
+            );
+          })()}
 
           {/* Bottom spacer */}
           <div className="h-8" />

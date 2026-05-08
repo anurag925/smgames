@@ -20,6 +20,7 @@ import {
   X,
 } from "lucide-react";
 import { getRandomWordPair, type WordPair } from "../data/word-pairs";
+import { H1, H2, H3, H4, BodyText, MutedText, Button, SolidBadge, Input, Spinner } from "../../../../components";
 
 // Types
 interface Player {
@@ -306,7 +307,7 @@ export default function UndercoverPlay() {
   if (!config || players.length === 0) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center">
-        <div className="text-slate-400">Loading...</div>
+        <Spinner />
       </div>
     );
   }
@@ -324,10 +325,10 @@ export default function UndercoverPlay() {
         <div className="flex-1 flex flex-col relative z-10">
           {/* Header */}
           <div className="text-center pt-8 pb-4 px-4">
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent">
+            <H2 className="text-2xl bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent !text-transparent">
               {currentPickPlayer?.name}
-            </h2>
-            <p className="text-slate-400 mt-1">Please pick a card</p>
+            </H2>
+            <MutedText className="text-slate-400 mt-1">Please pick a card</MutedText>
           </div>
 
           {/* Info bar */}
@@ -410,24 +411,20 @@ export default function UndercoverPlay() {
                   >
                     {players[cardSlots[revealedCard]].name[0].toUpperCase()}
                   </div>
-                  <span
-                    className={`text-xs font-bold px-3 py-1 rounded-full ${
-                      getRoleColor(players[cardSlots[revealedCard]].role).bg
-                    } text-white`}
-                  >
+                  <SolidBadge className={"rounded-full !px-3 !py-1 " + getRoleColor(players[cardSlots[revealedCard]].role).bg}>
                     {getRoleLabel(players[cardSlots[revealedCard]].role)}
-                  </span>
+                  </SolidBadge>
                 </div>
 
                 {/* Player name */}
-                <h3 className="text-xl font-bold text-center bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text text-transparent mb-1">
+                <H3 className="text-center bg-gradient-to-r from-cyan-400 to-indigo-400 bg-clip-text !text-transparent mb-1">
                   {players[cardSlots[revealedCard]].name}
-                </h3>
-                <p className="text-slate-400 text-sm text-center mb-4">
+                </H3>
+                <MutedText className="text-slate-400 text-center mb-4">
                   {players[cardSlots[revealedCard]].role === "mr-white"
                     ? "You have no secret word"
                     : "Your secret word"}
-                </p>
+                </MutedText>
 
                 {/* Word reveal */}
                 <div className="bg-slate-700/50 border border-slate-600/50 rounded-2xl p-6 mb-6">
@@ -439,12 +436,7 @@ export default function UndercoverPlay() {
                 </div>
 
                 {/* OK Button */}
-                <button
-                  onClick={handleCardOk}
-                  className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white font-bold text-lg py-3 rounded-full transition-all"
-                >
-                  OK
-                </button>
+                <Button variant="success" onClick={handleCardOk} className="w-full text-lg py-3">OK</Button>
               </div>
             </div>
           )}
@@ -470,25 +462,21 @@ export default function UndercoverPlay() {
           <div className="max-w-lg mx-auto w-full px-4 py-6 flex-1 flex flex-col">
             {/* Current speaker */}
             <div className="text-center mb-8">
-              <p className="text-slate-400 text-sm mb-2">Current Speaker</p>
+              <MutedText className="text-slate-400 mb-2">Current Speaker</MutedText>
               <div className="inline-flex flex-col items-center">
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-pink-500 flex items-center justify-center text-2xl font-bold mb-2">
                   {aliveSpeakers[currentSpeaker]?.name[0].toUpperCase()}
                 </div>
-                <h2 className="text-xl font-bold">
-                  {aliveSpeakers[currentSpeaker]?.name}
-                </h2>
-                <p className="text-slate-500 text-sm mt-1">
+                <H3>{aliveSpeakers[currentSpeaker]?.name}</H3>
+                <MutedText className="mt-1">
                   Give a one-word clue about your word
-                </p>
+                </MutedText>
               </div>
             </div>
 
             {/* Turn order */}
             <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-4 mb-6">
-              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">
-                Turn Order
-              </h3>
+              <H4 className="text-slate-500 mb-3">Turn Order</H4>
               <div className="space-y-2">
                 {aliveSpeakers.map((p, i) => (
                   <div
@@ -533,14 +521,11 @@ export default function UndercoverPlay() {
 
             {/* Action */}
             <div className="mt-auto pb-8">
-              <button
-                onClick={handleNextSpeaker}
-                className="w-full bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-bold text-lg py-4 rounded-full transition-all shadow-[0_0_20px_rgba(99,102,241,0.3)]"
-              >
+              <Button variant="primary" onClick={handleNextSpeaker} className="w-full text-lg py-4">
                 {currentSpeaker >= aliveSpeakers.length - 1
                   ? "Start Voting"
                   : "Next Speaker"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -561,10 +546,10 @@ export default function UndercoverPlay() {
 
           <div className="max-w-lg mx-auto w-full px-4 py-6 flex-1 flex flex-col">
             <div className="text-center mb-6">
-              <h2 className="text-xl font-bold mb-1">Who is the impostor?</h2>
-              <p className="text-slate-400 text-sm">
+              <H3 className="mb-1">Who is the impostor?</H3>
+              <MutedText className="text-slate-400">
                 Discuss and select who to eliminate
-              </p>
+              </MutedText>
             </div>
 
             {/* Player vote grid */}
@@ -600,16 +585,9 @@ export default function UndercoverPlay() {
 
             {/* Confirm */}
             <div className="mt-auto pb-8">
-              <button
-                onClick={handleConfirmElimination}
-                disabled={selectedVote === null}
-                className="w-full bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:from-slate-700 disabled:to-slate-700 disabled:cursor-not-allowed text-white font-bold text-lg py-4 rounded-full transition-all shadow-[0_0_20px_rgba(239,68,68,0.3)] disabled:shadow-none"
-              >
-                <span className="flex items-center justify-center gap-2">
-                  <Skull size={20} />
-                  Confirm Elimination
-                </span>
-              </button>
+              <Button variant="danger" icon={<Skull size={20} />} onClick={handleConfirmElimination} disabled={selectedVote === null} className="w-full text-lg py-4 !bg-gradient-to-r !from-red-500 !to-red-600 !text-white !border-0">
+                Confirm Elimination
+              </Button>
             </div>
           </div>
         </div>
@@ -625,17 +603,17 @@ export default function UndercoverPlay() {
                 <div className="w-20 h-20 rounded-full bg-slate-400 flex items-center justify-center text-2xl font-bold text-slate-900 mb-2">
                   {eliminatedPlayer.name[0].toUpperCase()}
                 </div>
-                <span className="text-xs font-bold px-3 py-1 rounded-full bg-slate-400 text-slate-900">
+                <SolidBadge className="rounded-full !px-3 !py-1 !bg-slate-400 !text-slate-900">
                   Mr. White
-                </span>
+                </SolidBadge>
               </div>
 
-              <h3 className="text-xl font-bold text-center mb-1">
+              <H3 className="text-center mb-1">
                 {eliminatedPlayer.name}
-              </h3>
-              <p className="text-slate-400 text-sm text-center mb-6">
+              </H3>
+              <MutedText className="text-slate-400 text-center mb-6">
                 You&apos;ve been caught! Guess the civilian word to win.
-              </p>
+              </MutedText>
 
               <input
                 type="text"
@@ -648,13 +626,9 @@ export default function UndercoverPlay() {
                 }}
               />
 
-              <button
-                onClick={handleMrWhiteSubmit}
-                disabled={!mrWhiteGuess.trim()}
-                className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 disabled:from-slate-700 disabled:to-slate-700 disabled:cursor-not-allowed text-white font-bold py-3 rounded-full transition-all"
-              >
+              <Button variant="success" onClick={handleMrWhiteSubmit} disabled={!mrWhiteGuess.trim()} className="w-full py-3">
                 Submit Guess
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -667,7 +641,7 @@ export default function UndercoverPlay() {
             <div className="bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700 rounded-3xl p-6 shadow-2xl">
               <div className="text-center mb-6">
                 <Skull size={48} className="mx-auto text-red-400 mb-3" />
-                <h2 className="text-2xl font-bold mb-1">Eliminated!</h2>
+                <H2 className="text-2xl mb-1">Eliminated!</H2>
               </div>
 
               <div className="flex flex-col items-center mb-4">
@@ -678,27 +652,20 @@ export default function UndercoverPlay() {
                 >
                   {eliminatedPlayer.name[0].toUpperCase()}
                 </div>
-                <span
-                  className={`text-xs font-bold px-3 py-1 rounded-full ${
-                    getRoleColor(eliminatedPlayer.role).bg
-                  } text-white mb-2`}
-                >
+                <SolidBadge className={"rounded-full !px-3 !py-1 mb-2 " + getRoleColor(eliminatedPlayer.role).bg}>
                   {getRoleLabel(eliminatedPlayer.role)}
-                </span>
-                <h3 className="text-xl font-bold">{eliminatedPlayer.name}</h3>
+                </SolidBadge>
+                <H3>{eliminatedPlayer.name}</H3>
                 {eliminatedPlayer.word && (
-                  <p className="text-slate-400 text-sm mt-1">
+                  <MutedText className="text-slate-400 mt-1">
                     Word: <span className="text-white font-medium">{eliminatedPlayer.word}</span>
-                  </p>
+                  </MutedText>
                 )}
               </div>
 
-              <button
-                onClick={handlePostElimination}
-                className="w-full bg-gradient-to-r from-indigo-500 to-indigo-600 hover:from-indigo-600 hover:to-indigo-700 text-white font-bold py-3 rounded-full transition-all mt-4"
-              >
+              <Button variant="primary" onClick={handlePostElimination} className="w-full py-3 mt-4">
                 {checkWinner(players) ? "See Results" : "Next Round"}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
@@ -723,26 +690,24 @@ export default function UndercoverPlay() {
           <div className="flex-1 flex flex-col items-center justify-center px-6">
             <div className="text-center mb-8">
               <Trophy size={56} className="mx-auto text-yellow-400 mb-4" />
-              <h1 className="text-4xl font-black mb-2">
+              <H1 className="text-4xl mb-2">
                 {winner === "civilians" && "Civilians Win!"}
                 {winner === "undercover" && "Undercover Wins!"}
                 {winner === "mr-white" && "Mr. White Wins!"}
-              </h1>
-              <p className="text-slate-400 text-lg">
+              </H1>
+              <BodyText className="text-lg">
                 {winner === "civilians" &&
                   "All impostors have been found and eliminated!"}
                 {winner === "undercover" &&
                   "The undercover agent survived to the end!"}
                 {winner === "mr-white" &&
                   "Mr. White correctly guessed the civilian word!"}
-              </p>
+              </BodyText>
             </div>
 
             {/* Reveal all roles */}
             <div className="w-full max-w-sm bg-slate-900/80 border border-slate-800 rounded-2xl p-4 mb-8">
-              <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 text-center">
-                All Players Revealed
-              </h3>
+              <H4 className="text-slate-500 mb-3 text-center">All Players Revealed</H4>
               <div className="space-y-2">
                 {players.map((p) => {
                   const roleColor = getRoleColor(p.role);
@@ -786,30 +751,24 @@ export default function UndercoverPlay() {
               {/* Word pair reveal */}
               {wordPair && (
                 <div className="mt-4 pt-3 border-t border-slate-800">
-                  <p className="text-xs text-slate-500 text-center">
+                  <MutedText className="text-xs text-center">
                     Words: <span className="text-indigo-400">{wordPair.civilian}</span>
                     {" vs "}
                     <span className="text-pink-400">{wordPair.undercover}</span>
-                  </p>
+                  </MutedText>
                 </div>
               )}
             </div>
 
             {/* Actions */}
             <div className="flex flex-col gap-3 w-full max-w-xs">
-              <button
-                onClick={handlePlayAgain}
-                className="flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-indigo-600 text-white font-bold py-4 rounded-full shadow-[0_0_20px_rgba(99,102,241,0.3)] transition-all hover:-translate-y-0.5"
-              >
-                <RotateCcw size={20} />
+              <Button variant="gradient" icon={<RotateCcw size={20} />} onClick={handlePlayAgain} className="w-full py-4">
                 Play Again
-              </button>
-              <Link
-                href="/games/undercover"
-                className="flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold py-4 rounded-full transition-all"
-              >
-                <Home size={20} />
-                Home
+              </Button>
+              <Link href="/games/undercover">
+                <Button variant="secondary" icon={<Home size={20} />} className="w-full py-4">
+                  Home
+                </Button>
               </Link>
             </div>
           </div>

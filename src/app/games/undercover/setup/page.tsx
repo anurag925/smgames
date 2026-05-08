@@ -14,6 +14,7 @@ import {
   X,
   UserPlus,
 } from "lucide-react";
+import { H2, H4, SolidBadge, Button, MutedText } from "../../../../components";
 
 const DEFAULT_NAMES = [
   "Player 1", "Player 2", "Player 3", "Player 4",
@@ -105,9 +106,7 @@ export default function UndercoverSetup() {
       <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
         {/* Player Count */}
         <section className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5">
-          <h2 className="text-xl font-bold mb-4 text-center">
-            Players: {playerCount}
-          </h2>
+          <H2 className="text-xl mb-4 text-center">Players: {playerCount}</H2>
           <div className="flex items-center justify-center gap-6">
             <button
               onClick={() => updatePlayerCount(playerCount - 1)}
@@ -140,9 +139,7 @@ export default function UndercoverSetup() {
 
         {/* Role Distribution */}
         <section className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5">
-          <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider mb-4">
-            Role Distribution
-          </h2>
+          <H4 className="text-slate-400 mb-4">Role Distribution</H4>
           <div className="space-y-3">
             {/* Civilians */}
             <div className="flex items-center justify-between py-2">
@@ -152,9 +149,7 @@ export default function UndercoverSetup() {
                 </div>
                 <span className="font-medium">Civilians</span>
               </div>
-              <span className="bg-indigo-500 text-white text-sm font-bold px-4 py-1.5 rounded-full">
-                {civilianCount}
-              </span>
+              <SolidBadge className="!text-sm !px-4 !py-1.5 !rounded-full">{civilianCount}</SolidBadge>
             </div>
 
             {/* Undercover */}
@@ -175,9 +170,7 @@ export default function UndercoverSetup() {
                 >
                   <Minus size={14} />
                 </button>
-                <span className="bg-pink-500 text-white text-sm font-bold px-4 py-1.5 rounded-full min-w-[3rem] text-center">
-                  {undercoverCount}
-                </span>
+                <SolidBadge className="!bg-pink-500 !text-sm !px-4 !py-1.5 !rounded-full min-w-[3rem] text-center">{undercoverCount}</SolidBadge>
                 <button
                   onClick={() =>
                     setUndercoverCount(
@@ -208,9 +201,7 @@ export default function UndercoverSetup() {
                 >
                   <Minus size={14} />
                 </button>
-                <span className="bg-slate-600 text-white text-sm font-bold px-4 py-1.5 rounded-full min-w-[3rem] text-center">
-                  {mrWhiteCount}
-                </span>
+                <SolidBadge className="!bg-slate-600 !text-sm !px-4 !py-1.5 !rounded-full min-w-[3rem] text-center">{mrWhiteCount}</SolidBadge>
                 <button
                   onClick={() =>
                     setMrWhiteCount(Math.min(maxMrWhite, mrWhiteCount + 1))
@@ -228,9 +219,7 @@ export default function UndercoverSetup() {
         {/* Player Names */}
         <section className="bg-slate-900/80 border border-slate-800 rounded-2xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-bold text-slate-400 uppercase tracking-wider">
-              Player Names
-            </h2>
+            <H4 className="text-slate-400">Player Names</H4>
             <UserPlus size={18} className="text-slate-500" />
           </div>
           <div className="space-y-2">
@@ -274,18 +263,11 @@ export default function UndercoverSetup() {
 
         {/* Start Button */}
         <div className="pt-2 pb-8">
-          <button
-            onClick={handleStart}
-            disabled={!allNamesValid || civilianCount < 2}
-            className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 disabled:from-slate-700 disabled:to-slate-700 disabled:cursor-not-allowed text-white font-bold text-lg py-4 px-8 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:shadow-none transition-all hover:-translate-y-0.5 disabled:hover:translate-y-0"
-          >
-            <Play size={22} />
-            Start Game
-          </button>
+          <Button variant="success" icon={<Play size={22} />} onClick={handleStart} disabled={!allNamesValid || civilianCount < 2} className="w-full text-lg py-4">Start Game</Button>
           {civilianCount < 2 && (
-            <p className="text-red-400 text-sm text-center mt-2">
+            <MutedText className="!text-red-400 text-center mt-2">
               Need at least 2 civilians
-            </p>
+            </MutedText>
           )}
         </div>
       </div>

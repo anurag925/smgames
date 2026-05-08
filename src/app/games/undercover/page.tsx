@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowLeft, Eye, EyeOff, Users, BookOpen, Play } from "lucide-react";
+import { H1, BodyText, MutedText, Button } from "../../../components";
 
 export default function UndercoverLanding() {
   return (
@@ -32,15 +33,15 @@ export default function UndercoverLanding() {
             <EyeOff className="text-pink-500" size={36} />
             <Eye className="text-indigo-500" size={36} />
           </div>
-          <h1 className="text-6xl sm:text-7xl font-black text-white tracking-tight mb-3">
+          <H1 className="text-6xl sm:text-7xl mb-3">
             UNDER
             <span className="bg-gradient-to-r from-pink-500 to-indigo-500 bg-clip-text text-transparent">
               COVER
             </span>
-          </h1>
-          <p className="text-slate-400 text-lg max-w-xs mx-auto">
+          </H1>
+          <BodyText className="text-lg max-w-xs mx-auto">
             Find the impostor among you. Trust no one.
-          </p>
+          </BodyText>
         </div>
 
         {/* Role Preview Cards */}
@@ -61,25 +62,21 @@ export default function UndercoverLanding() {
 
         {/* Action Buttons */}
         <div className="relative z-10 flex flex-col gap-4 w-full max-w-xs">
-          <Link
-            href="/games/undercover/setup"
-            className="flex items-center justify-center gap-3 bg-gradient-to-r from-pink-500 to-indigo-600 hover:from-pink-600 hover:to-indigo-700 text-white font-bold text-lg py-4 px-8 rounded-full shadow-[0_0_25px_rgba(99,102,241,0.3)] hover:shadow-[0_0_35px_rgba(99,102,241,0.5)] transition-all hover:-translate-y-0.5"
-          >
-            <Play size={22} />
-            Play Game
+          <Link href="/games/undercover/setup">
+            <Button variant="hero" icon={<Play size={22} />}>
+              Play Game
+            </Button>
           </Link>
-          <Link
-            href="/games/undercover/rules"
-            className="flex items-center justify-center gap-3 bg-slate-800/80 hover:bg-slate-700/80 border border-slate-700 text-slate-200 font-bold text-lg py-4 px-8 rounded-full transition-all hover:-translate-y-0.5"
-          >
-            <BookOpen size={22} />
-            How to Play
+          <Link href="/games/undercover/rules">
+            <Button variant="secondary" className="w-full text-lg py-4" icon={<BookOpen size={22} />}>
+              How to Play
+            </Button>
           </Link>
         </div>
 
         {/* Footer info */}
         <div className="relative z-10 mt-12 text-center">
-          <p className="text-slate-500 text-sm">4–10 Players • Pass the Device • Offline</p>
+          <MutedText>4–10 Players • Pass the Device • Offline</MutedText>
         </div>
       </div>
     </div>

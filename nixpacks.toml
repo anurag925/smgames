@@ -1,0 +1,20 @@
+# Nixpacks Configuration for SM Games
+# https://nixpacks.com/
+
+[phases.setup]
+nixpkgs = ["nodejs_20", "gcc", "pkg-config", "openssl"]
+
+[phases.install]
+depends = ["setup"]
+cmds = ["npm ci"]
+
+[phases.build]
+depends = ["install"]
+cmds = ["npm run build"]
+
+[start]
+cmd = "node server.js & npx tsx server.ts & wait"
+port = 3000
+
+[variables]
+NODE_ENV = "production"

@@ -45,6 +45,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/server.ts ./
 COPY --from=builder --chown=nextjs:nodejs /app/src ./src
 
+# Copy entrypoint script
+COPY --from=builder --chown=nextjs:nodejs /app/docker-entrypoint.sh ./
+RUN chmod +x docker-entrypoint.sh
+
 # Set ownership and switch user
 USER nextjs
 

@@ -3,6 +3,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    expose:
+      - 3000
+      - 3001
     container_name: smgames
     environment:
       - NODE_ENV=production

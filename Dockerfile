@@ -1,70 +1,60 @@
-# ============================================
-# Stage 1: Install dependencies
-# ============================================
+# ============================
+# Stage 1: Dependencies
+# ============================
 FROM node:20-alpine AS deps
-
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Copy only package files for layer caching
-COPY package.json package-lock.json ./
+COPY package.json package-lock.json* ./
+RUN npm ci && npm cache clean --force
 
-# Install production + dev deps (dev needed for build)
+# ============================
+# Stage 2: Builder
+# ============================
+FROM node:20-alpine AS builder
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
 RUN npm ci
 
-# ============================================
-# Stage 2: Build the application
-# ============================================
-FROM node:20-alpine AS builder
-
-WORKDIR /app
-
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Build Next.js (standalone output)
+# Generate Next.js build with standalone output
 RUN npm run build
 
-# ============================================
-# Stage 3: Production runtime
-# ============================================
+# ============================
+# Stage 3: Runner (Production)
+# ============================
 FROM node:20-alpine AS runner
-
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV PORT=3000
-ENV WS_PORT=3001
 
-# Don't run as root
+# Create non-root user for security
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# Copy standalone Next.js server
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
+# Copy all node_modules from builder (includes tsx for WebSocket server)
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 
-# Copy WebSocket server files
-COPY --from=builder /app/server.ts ./server.ts
-COPY --from=builder /app/src/lib/websocket-server.ts ./src/lib/websocket-server.ts
-COPY --from=builder /app/src/lib/room-manager.ts ./src/lib/room-manager.ts
+# Copy built artifacts from builder stage
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-# Install only what's needed to run the WS server (tsx for TypeScript)
-RUN npm init -y > /dev/null 2>&1 && \
-    npm install --no-save tsx ws 2>/dev/null
+# Copy WebSocket server files and source
+COPY --from=builder --chown=nextjs:nodejs /app/server.ts ./
+COPY --from=builder --chown=nextjs:nodejs /app/src ./src
 
-# Copy entrypoint script
-COPY docker-entrypoint.sh ./docker-entrypoint.sh
-RUN chmod +x ./docker-entrypoint.sh
-
-# Set ownership
-RUN chown -R nextjs:nodejs /app
-
+# Set ownership and switch user
 USER nextjs
 
+# Expose ports
 EXPOSE 3000 3001
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
 
-ENTRYPOINT ["./docker-entrypoint.sh"]
+# Start both servers using the entrypoint script
+ENTRYPOINT ["sh", "docker-entrypoint.sh"]

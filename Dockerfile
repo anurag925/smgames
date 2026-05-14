@@ -29,6 +29,8 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
+ENV PORT=${PORT:-3000}
+ENV WS_PORT=${WS_PORT:-3001}
 
 # Create non-root user for security
 RUN addgroup --system --gid 1001 nodejs && \
@@ -53,11 +55,11 @@ RUN chmod +x docker-entrypoint.sh
 USER nextjs
 
 # Expose ports
-EXPOSE 3000 3001
+EXPOSE ${PORT} ${WS_PORT}
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD wget --no-verbose --tries=1 --spider http://localhost:3000 || exit 1
+    CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT} || exit 1
 
 # Start both servers using the entrypoint script
 ENTRYPOINT ["sh", "docker-entrypoint.sh"]

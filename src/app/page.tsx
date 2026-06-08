@@ -53,18 +53,6 @@ export default function Home() {
   const featuredGames = [
     {
       id: 1,
-      title: "Guess the Number",
-      category: "Puzzle",
-      players: "2",
-      rating: "4.8",
-      color: "from-emerald-400 to-teal-600",
-      icon: Puzzle,
-      trending: false,
-      href: "/games/guess-the-number",
-      mode: "Online",
-    },
-    {
-      id: 2,
       title: "Undercover",
       category: "Party",
       players: "4-10",
@@ -235,7 +223,11 @@ export default function Home() {
           {/* Games Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {featuredGames.map((game) => (
-              <Link key={game.id} href={game.href} className="group cursor-pointer">
+              <Link
+                key={game.id}
+                href={game.href}
+                className="group cursor-pointer"
+              >
                 <div
                   className={`relative w-full aspect-square rounded-2xl p-1 bg-gradient-to-br ${game.color} transition-all duration-300 group-hover:-translate-y-2 group-hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]`}
                 >
@@ -398,7 +390,10 @@ export default function Home() {
             <a href="#" className="hover:text-white transition-colors">
               Discord
             </a>
-            <Link href="/ui-showcase" className="hover:text-white transition-colors">
+            <Link
+              href="/ui-showcase"
+              className="hover:text-white transition-colors"
+            >
               UI Showcase
             </Link>
           </div>
